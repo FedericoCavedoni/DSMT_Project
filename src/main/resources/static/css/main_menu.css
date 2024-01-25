@@ -1,0 +1,61 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout-container {
+    margin-left: 20px;
+}
+
+.logout-btn {
+    background-color: #008080;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #006666;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.button-container {
+    text-align: center;
+}
+
+.wide-button {
+    background-color: #008080;
+    color: white;
+    padding: 40px 80px; /* Aumentato le dimensioni del pulsante */
+    margin: 20px; /* Aumentato lo spazio tra i pulsanti */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block; /* Impostato su block per renderli uno sopra l'altro */
+}
+
+.wide-button:hover {
+    background-color: #006666;
+}
