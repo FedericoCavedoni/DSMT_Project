@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", function(){
     document.getElementById('logout').onclick = function () {
         if(confirm("Are u sure you want to log out?")){
             sessionStorage.removeItem("userLog");
-            location.href = "../templates/home.html";
+            location.href = "../home.html";
         }
     }
 
     document.getElementById('home').onclick = function () {
-        location.href = "../templates/admin.html";
+        location.href = "../admin.html";
     }
 
     document.getElementById('search_btn').onclick = function () {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function(){
 function checkLogIn(){
     if(sessionStorage.getItem("userLog")!=="admin"){
         alert("You Must be logged as Admin to access this web page!")
-        location.href = "../static/templates/home.html";
+        location.href = "../home.html";
     }
 }
 
@@ -30,7 +30,7 @@ function generate_games() {
     document.getElementById('games_list').innerHTML = "";
 
     $.ajax({
-        url: "http://localhost:5050/browseGamesAdmin",
+        url: "http://10.2.1.120:5050/browseGamesAdmin",
         type: "POST",
         contentType: 'application/json',
         success: function(data) {
@@ -44,7 +44,7 @@ function generate_games() {
                     let user2 = entry.user2;
                     let user3 = entry.user3;
                     let score = entry.score
-                    let timestamp = new Date(entry.timestamp).toLocaleString(); // Converti la data in formato leggibile
+                    let timestamp = new Date(entry.timestamp).toLocaleString();
 
                     let row = document.createElement('div');
                     row.classList.add('game-entry');
@@ -78,7 +78,7 @@ function search_games() {
     }
 
     $.ajax({
-        url: "http://localhost:5050/browseGames",
+        url: "http://10.2.1.120:5050/browseGames",
         data: username,
         type: "POST",
         contentType: 'application/json',

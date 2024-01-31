@@ -8,10 +8,14 @@ $(document).ready(function() {
     document.getElementById("send-button").disabled = true;
     document.getElementById("guess-button").disabled = true;
     document.getElementById("restart-button").disabled = true;
+    if(sessionStorage.getItem("role") == "Guesser"){
+        document.getElementById("chat-box").removeChild(document.getElementById('column1'));
+    }
+        
     // Socket opened
     socket.addEventListener("open", (event) => {
         console.log("Connessione WebSocket aperta:", event);
-        //socket.send("Ciao, sono il client!");
+        sendStartMsg();
     });
 
     // Server sent a message
@@ -107,6 +111,16 @@ $(document).ready(function() {
         console.error("Errore WebSocket:", event);
     });
 
+    if(sessionStorage.getItem("role") === "Player") {
+        document.getElementById("guess-button").disabled = true;
+    }
+    else {
+        document.getElementById("send-button").disabled = true;
+    }
+
+});
+
+function sendStartMsg(){
     if(sessionStorage.getItem("role") === "Guesser"){
         let messLog = {
             action : "login",
@@ -123,7 +137,7 @@ $(document).ready(function() {
         setTimeout(function() {
             socket.send(JSON.stringify(messLog));
             socket.send(JSON.stringify(mess));
-        }, 15500);
+        }, 1000);
     }
     else{
         let messLog = {
@@ -138,24 +152,14 @@ $(document).ready(function() {
             role: sessionStorage.getItem("role")
         };
     
-        setTimeout(function() {
-            console.log("Dopo 3 secondi di attesa");
-            socket.send(JSON.stringify(messLog));
-            socket.send(JSON.stringify(mess));
-            console.log(messLog);
-            console.log(mess);
-        }, 10000);
+        socket.send(JSON.stringify(messLog));
+        socket.send(JSON.stringify(mess));
+        console.log(messLog);
+        console.log(mess);
     }
+}
 
-    if(sessionStorage.getItem("role") === "Player") {
-        document.getElementById("guess-button").disabled = true;
-    }
-    else {
-        document.getElementById("send-button").disabled = true;
-    }
-
-});
-
+var stringaRisultante;
 function printWordToGuess(msg) {
     // Rimuovi tutte le parole precedenti
     var wordToGuessElement = document.getElementById("wordToGuess");
@@ -164,7 +168,7 @@ function printWordToGuess(msg) {
     }
 
     // Aggiungi la nuova parola
-    var stringaRisultante = String.fromCharCode.apply(null, msg);
+    stringaRisultante = String.fromCharCode.apply(null, msg);
     var word = document.createTextNode("Word to guess: "+stringaRisultante);
     wordToGuessElement.appendChild(word);
 }
@@ -177,6 +181,9 @@ function printGuessedWord(msg) {
         guessedWordElement.removeChild(guessedWordElement.firstChild);
     }
 
+    document.getElementById("column1").innerHTML="";
+    document.getElementById("column2").innerHTML="";
+
     // Aggiungi la nuova parola
     var word = document.createTextNode("Guesser said: "+msg);
     guessedWordElement.appendChild(word);
@@ -184,7 +191,7 @@ function printGuessedWord(msg) {
 
 
 function startWait(){
-    //document.getElementById("send-button").disabled = true;
+    
     let mess = {
         action : "wait"
     };
@@ -196,7 +203,6 @@ function startWait(){
 }
 
 function sendMessage(word){
-    //var word = document.getElementById("message-input").value;
     var guessedWordElement = document.getElementById("guessedWord");
     while (guessedWordElement.firstChild) {
         guessedWordElement.removeChild(guessedWordElement.firstChild);
@@ -226,15 +232,16 @@ function guess(){
     } else {
         console.error("Connessione WebSocket non aperta.");
     }
+    document.getElementById("column2").innerHTML="";
     startWait();
 }
 
 function printFriendWord(msg){
-    //document.getElementById("send-button").disabled = false;
     var word = document.createTextNode(msg);
     var lineBreak = document.createElement("br");
-    document.getElementById("chat-box").appendChild(word);
-    document.getElementById("chat-box").appendChild(lineBreak);
+    document.getElementById("column2").appendChild(word);
+    document.getElementById("column2").appendChild(lineBreak);
+    document.getElementById("column1").appendChild(document.createElement("br"));
 }
 
 function restart(){
@@ -243,21 +250,34 @@ function restart(){
 }
 
 document.getElementById("send-button").onclick = function(){
-    //document.getElementById("send-button").disabled = true;
     var w = document.getElementById("message-input").value;
+    
+    console.log(w);
+    console.log(stringaRisultante);
+    //se la parola è la stessa di quella da indovinare non viene inviata
+    if(w == stringaRisultante){
+        document.getElementById("message-input").value = "";
+        return;
+    }
+
+    //se parola contiene spazi non viene inviata
+    if(w.indexOf(' ') !== -1){
+        document.getElementById("message-input").value = "";
+        return;
+    }
+   
     var word = document.createTextNode(document.getElementById("message-input").value);
     var lineBreak = document.createElement("br");
-    document.getElementById("chat-box").appendChild(word);
-    document.getElementById("chat-box").appendChild(lineBreak);
+    document.getElementById("column1").appendChild(word);
+    document.getElementById("column1").appendChild(lineBreak);
+    document.getElementById("column2").appendChild(document.createElement("br"));
     document.getElementById("message-input").value = "";
     sendMessage(w);
 }
 
 document.getElementById("guess-button").onclick = function(){
-    clearInterval(timerInterval);
     guess();
     document.getElementById("message-input").value = "";
-    setInterval(updateTimer, 1000);
 }
 
 var seconds = 60;
@@ -265,12 +285,14 @@ var seconds = 60;
 function updateTimer(){
     seconds -= 1;
     document.getElementById("timer").textContent = seconds;
-    if(seconds === 0) {
+    if(seconds <= 0) {
         clearInterval(timerInterval);
         if(sessionStorage.getItem("role") === "Guesser"){
             insert_match()
         }
         document.getElementById("restart-button").disabled = false;
+        document.getElementById("send-button").disabled = true;
+        document.getElementById("guess-button").disabled = true;
     }
 }
 
@@ -290,7 +312,7 @@ function insert_match(){
     };
 
     $.ajax({
-        url : "http://localhost:5050/insertMatch",
+        url : "http://10.2.1.120:5050/insertMatch",
         data : JSON.stringify(match),
         type : "POST",
         dataType: "text",
@@ -299,8 +321,6 @@ function insert_match(){
             console.log(data)
         },
         error: function(xhr) {
-            //let response = JSON.parse(xhr.responseText)
-            //alert(response.answer)
             console.log(xhr)
             alert(xhr)
         }

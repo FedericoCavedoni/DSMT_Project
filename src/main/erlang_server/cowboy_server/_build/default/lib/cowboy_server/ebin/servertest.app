@@ -1,0 +1,11 @@
+{application,cowboy_server,
+             [{description,"An OTP application"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {mod,{cowboy_server_app,[]}},
+              {applications,[kernel,stdlib,cowboy]},
+              {env,[]},
+              {modules,[cowboy_server_app,cowboy_server_sup,player_handler,
+                        server_handler]},
+              {licenses,["Apache-2.0"]},
+              {links,[]}]}.

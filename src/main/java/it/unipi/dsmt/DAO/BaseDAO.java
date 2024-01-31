@@ -5,9 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class BaseDAO {
-    // Cambiare url quando sarà online
-    private static final String URL = "jdbc:mysql://localhost:3306/intesa_vincente";
-    // mettere proprie credenziali
+    private static final String URL = "jdbc:mysql://10.2.1.75:3306/intesa_vincente";
     private static final String USERNAME = "root";
 
     private static final String PASSWORD = "studenti";

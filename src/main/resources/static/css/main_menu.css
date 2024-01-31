@@ -46,6 +46,8 @@ main {
 }
 
 .wide-button {
+    width: 100px;
+    height: 20px;
     background-color: #008080;
     color: white;
     padding: 40px 80px; /* Aumentato le dimensioni del pulsante */

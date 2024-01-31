@@ -4,7 +4,7 @@ $(document).ready(function () {
     let psw = document.getElementById('psw_login').value
 
     if(uname === "admin" && psw === "admin"){
-      location.href = "../templates/admin.html"
+      location.href = "./admin.html"
       sessionStorage.setItem("userLog","admin");
     }
 
@@ -14,7 +14,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-      url : "http://localhost:5050/login",
+      url : "http://10.2.1.120:5050/login",
       data : JSON.stringify(requestUser),
       type : "POST",
       dataType: "json",
@@ -22,7 +22,7 @@ $(document).ready(function () {
       success: function () {
         sessionStorage.setItem("userLog",uname);
         sessionStorage.setItem("gameId","");
-        location.href = "../templates/playerMainPage.html"
+        location.href = "./playerMainPage.html"
       },
       error: function(xhr) {
         let response = JSON.parse(xhr.responseText)

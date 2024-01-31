@@ -20,21 +20,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('home').onclick = function (){
     if(sessionStorage.getItem("userLog")){
-      location.href = "../templates/playerMainPage.html";
+      location.href = "../playerMainPage.html";
     }
     else{
       alert("You need to login to access the profile page")
-      location.href = "../templates/login.html";
+      location.href = "../login.html";
     }
   }
 
   document.getElementById('homeProfile').onclick = function (){
     if(sessionStorage.getItem("userLog")){
-      location.href = "../templates/playerMainPage.html";
+      location.href = "../playerMainPage.html";
     }
     else{
       alert("You need to login to access the profile page")
-      location.href = "../templates/login.html";
+      location.href = "../login.html";
     }
   }
 });
@@ -43,14 +43,14 @@ function logout(){
     if(!confirm("Are you sure you want to log out?")) return;
 
     $.ajax({
-      url: "http://localhost:5050/logout",
+      url: "http://10.2.1.120:5050/logout",
       type: "POST",
       data: user_logged,
       dataType: "text",
       contentType: 'application/json',
       success: function () {
         sessionStorage.removeItem("userLog");
-        location.href = "../templates/login.html";
+        location.href = "../login.html";
       },
       error: function (xhr) {
         alert(xhr.responseText);
@@ -60,7 +60,7 @@ function logout(){
 function checkLogIn(){
   if(!sessionStorage.getItem("userLog")){
     alert("User not logged!")
-    location.href = "../templates/home.html"
+    location.href = "../home.html"
   }
 }
 
@@ -72,7 +72,7 @@ function remove_friend(id) {
     };
 
     $.ajax({
-      url: "http://localhost:5050/removeFriend",
+      url: "http://10.2.1.120:5050/removeFriend",
       data: JSON.stringify(request),
       dataType: "json",
       type: "POST",
@@ -103,8 +103,7 @@ function generate_friends(){
   };
 
   $.ajax({
-    url : "http://localhost:5050/viewFriends",
-    //data : {username : sessionStorage.getItem("userLog"), page : page_number_follower, direction: d_follower, searchText: st_follower},
+    url : "http://10.2.1.120:5050/viewFriends",
     data : JSON.stringify(request),
     dataType : "json",
     type : "POST",
@@ -199,7 +198,7 @@ function searchGlobalFriends(){
   };
 
   $.ajax({
-    url : "http://localhost:5050/globalSearch",
+    url : "http://10.2.1.120:5050/globalSearch",
     data : JSON.stringify(data),
     dataType : "json",
     type : "POST",
@@ -265,7 +264,7 @@ function addFriend(username) {
     };
 
     $.ajax({
-      url: "http://localhost:5050/addFriend",
+      url: "http://10.2.1.120:5050/addFriend",
       data: JSON.stringify(request),
       dataType: "json",
       type: "POST",
@@ -303,7 +302,7 @@ document.getElementById("sendInvites").onclick = function(){
   };
 
   $.ajax({
-    url: "http://localhost:5050/inviteFriend",
+    url: "http://10.2.1.120:5050/inviteFriend",
     data: JSON.stringify(request),
     dataType: "text",
     type: "POST",
@@ -314,10 +313,52 @@ document.getElementById("sendInvites").onclick = function(){
         sessionStorage.setItem("role", "Player");
       else
         sessionStorage.setItem("role", "Guesser");
-      location.href = "../templates/loading.html";
+      location.href = "../loading.html";
     },
     error: function(xhr) {
      alert("Error sending invites");
     }
   });
+}
+
+var searchInvite = setInterval(searchInvitation, 10000);
+
+function searchInvitation(){
+    $.ajax({
+        url : "http://10.2.1.120:5050/checkInvite",
+        data : sessionStorage.getItem("userLog"),
+        dataType : "json",
+        type : "POST",
+        contentType: 'application/json',
+        success: function (data, textStatus, jqXHR) {
+            if(jqXHR.status !== 204){
+                let result = window.confirm("Invite received from " + data.userInvite + ", accept?");
+                sessionStorage.setItem("gameId", data.id);
+                if(result){
+                    sessionStorage.setItem("role", data.role);
+                    location.href = "../loading.html";
+                }
+                else{
+                    declineInvitation();
+                }
+            }
+
+        },
+        error: function(xhr) {
+        }
+    })
+}
+
+function declineInvitation(){
+    $.ajax({
+        url : "http://10.2.1.120:5050/declineInvitation",
+        data : sessionStorage.getItem("gameId"),
+        dataType : "json",
+        type : "POST",
+        contentType: 'application/json',
+        success: function (data) {
+        },
+        error: function(xhr) {
+        }
+    })
 }

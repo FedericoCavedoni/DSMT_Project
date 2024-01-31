@@ -27,7 +27,7 @@ $(document).ready(function () {
         };
 
         $.ajax({
-          url : "http://localhost:5050/signup",
+          url : "http://10.2.1.120:5050/signup",
           data : JSON.stringify(person),
           type : "POST",
           contentType: 'application/json',
@@ -35,7 +35,7 @@ $(document).ready(function () {
           success: function () {
             sessionStorage.setItem("userLog",uname);
 
-            location.href = "../templates/playerMainPage.html"
+            location.href = "./playerMainPage.html"
           },
           error: function(xhr) {
             alert(xhr.responseText)

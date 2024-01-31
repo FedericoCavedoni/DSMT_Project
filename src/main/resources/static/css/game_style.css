@@ -90,3 +90,13 @@ body {
     transition: background-color 0.3s ease;
     border: 2px solid black;
 }
+
+#chat-box {
+    display: flex;
+  }
+  
+  .column {
+    flex: 1;
+    padding: 10px; /* Aggiungi spaziatura tra le colonne se necessario */
+    border: 1px solid #ccc; /* Aggiungi una bordatura per separare visivamente le colonne */
+  }

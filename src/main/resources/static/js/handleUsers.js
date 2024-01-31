@@ -4,16 +4,16 @@ document.addEventListener('DOMContentLoaded',function () {
 
   document.getElementById('logout').onclick = function () {
     if(confirm("Are u sure you want to log out?"))
-      location.href = "../templates/home.html";
+      location.href = "../home.html";
   }
 
   document.getElementById('home').onclick = function () {
     if(sessionStorage.getItem("userLog")){
-      location.href = "../templates/admin.html";
+      location.href = "../admin.html";
     }
     else{
       alert("You need to login to access the profile page")
-      location.href = "../templates/login.html";
+      location.href = "../login.html";
     }
   }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded',function () {
     };
 
     $.ajax({
-      url : "http://localhost:5050/globalSearch",
+      url : "http://10.2.1.120:5050/globalSearch",
       data : JSON.stringify(data),
       dataType : "json",
       type : "POST",
@@ -85,7 +85,7 @@ function generate_users() {
   };
 
   $.ajax({
-    url: "http://localhost:5050/viewUsers",
+    url: "http://10.2.1.120:5050/viewUsers",
     data: JSON.stringify(request),
     dataType: "json",
     type: "POST",
@@ -145,7 +145,7 @@ function generate_users() {
 function checkLogIn(){
   if(!sessionStorage.getItem("userLog")){
     alert("User not logged!")
-    location.href = "../templates/home.html"
+    location.href = "../home.html"
   }
 }
 
@@ -155,7 +155,7 @@ function remove_user(uname) {
     console.log(uname);
 
     $.ajax({
-      url: "http://localhost:5050/removeUser",
+      url: "http://10.2.1.120:5050/removeUser",
       data: uname,
       dataType : "Text",
       type: "POST",

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendDAO extends BaseDAO{
-
     public PageDTO<FriendDTO> viewFriends(String username, int page){
         PageDTO<FriendDTO> pageDTO = new PageDTO<>();
         List<FriendDTO> entries = new ArrayList<>();
